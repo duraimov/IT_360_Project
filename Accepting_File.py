@@ -1,17 +1,31 @@
-import sys
-import os
-import re
+
+
+
+class File:
+
+	def __init__(self, file_name):
+
+		self.file_name = file_name
+	
+
+	
+		
+	def open_file(file):
+
+		
+	
 
 
 
 
-fileName = input("what is your file name?")
 
-readFile = open(fileName, "r")
+	
+
+	
 
 
 
-print(fileName.readline())
+
 
 
 
