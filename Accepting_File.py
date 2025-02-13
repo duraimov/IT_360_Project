@@ -1,7 +1,9 @@
 
 
 
-class File:
+class FileOpener:
+
+	file_name = ""
 
 	def __init__(self, file_name):
 
@@ -10,7 +12,20 @@ class File:
 
 	
 		
-	def open_file(file):
+	def open_file(self):
+
+
+		self.opened_file=open(self.file_name, "r")
+
+	def close_file(self):
+
+		self.opened_file=
+
+		
+
+		
+
+
 
 		
 	
