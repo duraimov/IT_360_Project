@@ -19,7 +19,10 @@ class FileOpener:
 
 	def close_file(self):
 
-		self.opened_file=
+		self.opened_file.close()
+
+		
+
 
 		
 
