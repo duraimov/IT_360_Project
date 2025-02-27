@@ -1,0 +1,16 @@
+
+keywords = ["repeat"]
+results = {}
+filepath = "testfile.txt"
+
+with open(filepath, 'r', encoding='utf-8') as file:
+                for line_num, line in enumerate(file, 1):
+                    matches = []
+                    for keyword in keywords:
+                        if keyword.lower() in line.lower():
+                            matches.append(keyword)
+                    
+                    if matches:
+                        results[line_num] = matches
+
+print(results)
