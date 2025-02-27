@@ -1,4 +1,5 @@
 import os
+import re
 
 class FileOpener:
 
@@ -19,6 +20,24 @@ class FileOpener:
 	def close_file(self):
 
 		self.opened_file.close()
+
+
+	def search(self):
+		keywords = "repeat"
+
+		self.opened_file.read()
+		
+
+
+		for line in self.opened_file:
+
+			matches = re.findall("test", keywords)
+			print(matches)
+
+			
+
+
+
 
 class DirectoryHandler:
 	dirname = ''

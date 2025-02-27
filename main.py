@@ -1,11 +1,12 @@
-
 from Accepting_File import FileOpener
 
 
 
 
-fo = FileOpener(file)
+fo = FileOpener("testfile.txt")
 fo.open_file()
+fo.search()
+
 
 
 
