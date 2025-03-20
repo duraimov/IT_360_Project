@@ -1,5 +1,3 @@
-
-
 class KeywordChecker:
     def __init__(self, keywords=None):
         """Initialize with a list of keywords to search for."""
