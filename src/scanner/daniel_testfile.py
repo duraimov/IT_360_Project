@@ -10,6 +10,7 @@ def run_daniel():
 
 
     return
+
 def isrtlext(file):
     rtl_override_present = False
     for char in file:
@@ -19,7 +20,7 @@ def isrtlext(file):
     return rtl_override_present
 
 def toVirusTotal(file):
-    
+    return    
 
 
 
