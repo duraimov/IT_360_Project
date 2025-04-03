@@ -1,5 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./virustotal_python-1.1.0"
-    ]
-}
