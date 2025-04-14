@@ -7,7 +7,9 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 
+import io
 
 def open_file():
     file_path = filedialog.askdirectory(title="Select a Folder")
@@ -15,18 +17,23 @@ def open_file():
         return file_path
     return None
 
+def do_scan():
+    # Everything we want to scan for should go in here!!
+    results_file = open('results.txt', 'w')
+    results_file.write('Scan results:\n')
+    results_file.close()
+
+    messagebox.showinfo("Scan completed", "Results are saved to results.txt")
+
 def scanner():
 
-    if os.name != 'nt':
-        print('This program does not support your operating system')
-        exit(1)
-
-    from .pyads import ADS # https://github.com/RobinDavid/pyADS (License: MIT)
+    if os.name == 'nt':
+        from .pyads import ADS # https://github.com/RobinDavid/pyADS (License: MIT)
 
 
     print('IT 360 Folder Scanner\n')
 
-    root = Tk()
+    root = tk.Tk()
     root.title("IT 360 Folder Scanner by Daniel Uraimov and Ty Qualters")
 
     frm = ttk.Frame(root, padding=10)
@@ -34,51 +41,21 @@ def scanner():
 
     filename = tk.StringVar(value="No folder selected")
 
+    # Function to handle folder selection
     def pick_file():
         dir = open_file()
         if dir:
             filename.set(dir)
+            # Enable the Scan button when a folder is selected
+            scan_button.config(state="normal")
 
+    # Create buttons and labels
     ttk.Button(frm, text="Open Folder", command=pick_file).grid(column=0, row=0)
-    label = ttk.Label(frm, textvariable=filename).grid(column=2, row=0)
-    ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
+    ttk.Label(frm, textvariable=filename).grid(column=1, row=0)
+    ttk.Button(frm, text="Quit", command=root.destroy).grid(column=2, row=1)
+
+    # Initially disabled Scan button
+    scan_button = ttk.Button(frm, text="Scan", command=do_scan, state="disabled")
+    scan_button.grid(column=1, row=1)
+
     root.mainloop()
-
-    # print('Type \'help\' for a list of commands.')
-
-    # while True:
-    #     userInput = input('> ')
-    #     print()
-    #     match userInput:
-    #         case 'help':
-    #             print('Commands:')
-    #             print('  - help [No Arguments]')
-    #             print('  Displays a list of commands')
-    #             print()
-    #             print('  - summary [Directory] [(Optional) Output File]')
-    #             print('  Performs a general analysis on a folder/directory')
-    #             print()
-    #             print('  - listads [File/Directory]')
-    #             print('  Lists the Alternate Data Streams (ADS) of a file or directory')
-    #             print()
-    #             print('  - readads [File/Directory] [ADS] [(Optional) Output File]')
-    #             print('  Reads the contents of an ADS')
-    #             print()
-    #             print('  - isrtlext [File]')
-    #             print('  Checks if a file\'s extension is in RTL')
-    #             print()
-    #             print('  - issteg [File]')
-    #             print('  Checks if a file has hidden contents')
-    #             print()
-    #             print('  - getperms [File/Directory]')
-    #             print('  Recursively check permissions of a file or directory')
-    #             print()
-    #             print('  - getmeta [File]')
-    #             print('  Get the metadata of a file')
-    #             print()
-    #             print('  - exit')
-    #             print('  Close the program')
-    #             print()
-    #         case 'exit' | 'quit':
-    #             print('Goodbye!')
-    #             exit(0)
