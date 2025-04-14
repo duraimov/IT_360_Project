@@ -4,7 +4,7 @@ import virustotal_python
 import os
 import requests
 
-api_key = "6acabfc35b112fd6c58b626055a8fe288e0f5571f03b099d44ffe3380b21a72b"
+
 
 def run_daniel():
 
