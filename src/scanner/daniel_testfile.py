@@ -9,10 +9,19 @@ api_key = "6acabfc35b112fd6c58b626055a8fe288e0f5571f03b099d44ffe3380b21a72b"
 
 def run_daniel():
 
-    hash = hash_file("C:\\Users\\thebe\\OneDrive\\Desktop\\test.txt")
-    print(hash)
+    # hash = hash_file("C:\\Users\\thebe\\OneDrive\\Desktop\\test.txt")
+    # print(hash)
 
-    print('Daniel this is your main function. Whatever you want to do, just put it here.')
+
+    # rtlext = isrtlext("C:\\Users\\thebe\\OneDrive\\Desktop\\test.txt")
+    # print (rtlext)
+
+    #vt = toVirusTotal("C:\\Users\\thebe\\OneDrive\\Desktop\\test.txt")
+    #print(vt)
+
+    results = search("C:\\Users\\thebe\\OneDrive\\Desktop\\test.txt", "C:\\Users\\thebe\\OneDrive\\Desktop\\keywords.txt")
+    
+    print(results)
 
 
     return
@@ -49,6 +58,21 @@ def hash_file(filepath):
             sha256.update(chunk)
     
     return sha256.hexdigest()
+
+
+def search(file_path, keyword_path):
+    with open(keyword_path, 'r') as kf:
+        keywords = [line.strip() for line in kf if line.strip()]
+
+    # Read the main file
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+
+    # Search for keywords in each line
+    for i, line in enumerate(lines, start=1):
+        for keyword in keywords:
+            if keyword in line:
+                print(f'Keyword "{keyword}" found on line {i}: {line.strip()}')
 
 
 
