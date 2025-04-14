@@ -10,6 +10,8 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 import io
+from .files import FileOpener, DirectoryHandler
+from .utils import *
 
 def open_file():
     file_path = filedialog.askdirectory(title="Select a Folder")
@@ -17,10 +19,21 @@ def open_file():
         return file_path
     return None
 
-def do_scan():
+def do_scan(dirpath):
     # Everything we want to scan for should go in here!!
     results_file = open('results.txt', 'w')
     results_file.write('Scan results:\n')
+
+    working_dir = DirectoryHandler(dirpath)
+    for filename in working_dir.list_files():
+        file = working_dir.get_file(filename)
+        file.open_file()
+        contents = file.read()
+        results_file.write(f'File: {filename}\n')
+        results_file.write(f'\tContains RTL character? {"Yes" if isrtlext(filename) else "No"}\n')
+        results_file.write(f'\tMetadata: {str(get_metadata(working_dir.get_file_path(filename)))}\n')
+        file.close_file()
+
     results_file.close()
 
     messagebox.showinfo("Scan completed", "Results are saved to results.txt")
@@ -49,13 +62,19 @@ def scanner():
             # Enable the Scan button when a folder is selected
             scan_button.config(state="normal")
 
+    # Function to handle scanner
+    def on_scan_button_click():
+        fname = filename.get()
+        do_scan(fname)
+        scan_button.config(state="disabled")
+
     # Create buttons and labels
     ttk.Button(frm, text="Open Folder", command=pick_file).grid(column=0, row=0)
     ttk.Label(frm, textvariable=filename).grid(column=1, row=0)
     ttk.Button(frm, text="Quit", command=root.destroy).grid(column=2, row=1)
 
     # Initially disabled Scan button
-    scan_button = ttk.Button(frm, text="Scan", command=do_scan, state="disabled")
+    scan_button = ttk.Button(frm, text="Scan", command=on_scan_button_click, state="disabled")
     scan_button.grid(column=1, row=1)
 
     root.mainloop()

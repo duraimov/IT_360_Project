@@ -13,15 +13,6 @@ def run_daniel():
 
     return
 
-   #checks for file extensions written right to left 
-def isrtlext(file):
-    rtl_override_present = False
-    for char in file:
-        if ord(char) == 0x202E: #if file name contains right to left unicode
-            rtl_override_present = True
-            break
-    return rtl_override_present
-
 def toVirusTotal(file):
 
     

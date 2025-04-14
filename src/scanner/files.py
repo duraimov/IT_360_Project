@@ -7,11 +7,15 @@ class FileOpener:
 
 	def __init__(self, file_name):
 
+		self.opened_file = None
 		self.file_name = file_name
 	
 	def open_file(self):
 		
 		self.opened_file=open(self.file_name, "r")
+
+	def read(self):
+		return self.opened_file.read()
 
 	def print(self):
 		
@@ -48,14 +52,17 @@ class DirectoryHandler:
 		else:
 			print(f'Error: {dirname} does not exist')
 
-	def list_files():
+	def list_files(self):
+		return (file for file in os.listdir(self.dirname) if os.path.isfile(os.path.join(self.dirname, file)))
+	
+	def list_datastreams(self):
 		print('no esta bien')
 		return
-	
-	def list_datastreams():
-		print('no esta bien')
-		return
-	
+
+	def get_file_path(self, filename):
+		filepath = os.path.join(self.dirname, filename)
+		return filepath
+
 	def get_file(self, file_name):
 		filepath = os.path.join(self.dirname, file_name)
 		if os.path.exists(filepath):
