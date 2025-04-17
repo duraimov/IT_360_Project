@@ -5,7 +5,7 @@ import os
 import requests
 import hashlib
 
-
+#TODO: add functionality for checkbox whether you want to upload to virustotal, if yes, need api key
 
 def run_daniel():
 
