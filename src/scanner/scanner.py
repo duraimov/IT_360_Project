@@ -104,7 +104,6 @@ def do_scan(dirpath):
         else:
             results_file.write(f'The keywords found were: {KeywordChecker.check_file}')
 
-
         if score > 500:
             results_file.write('**SUSPICIOUS!!\n')
 
