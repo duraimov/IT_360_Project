@@ -1,7 +1,10 @@
 class KeywordChecker:
+
+    
     def __init__(self, keywords=None):
         """Initialize with a list of keywords to search for."""
-        self.keywords = keywords if keywords is not None else []
+        keyword_list = ["show", "me", "sus"]
+        self.keywords = keyword_list
     
 
 

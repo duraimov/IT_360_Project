@@ -14,6 +14,7 @@ import io
 from .files import FileOpener, DirectoryHandler
 from .utils import *
 from .virustotal import is_red_scan
+from .keywords import KeywordChecker
 
 
 def hash_file(filepath):
@@ -46,12 +47,6 @@ def do_scan(dirpath):
 
     if not has_vt_access:
         results_file.write('Note: VirusTotal scanning disabled - VIRUSTOTAL_API_KEY not set\n\n')
-
-    # Check if running on Windows for ADS support
-    can_check_ads = os.name == 'nt'
-    if can_check_ads:
-        from .pyads import ADS
-
 
     results_file.write('Scan results:\n')
 
@@ -90,19 +85,10 @@ def do_scan(dirpath):
             digest = hash_file(working_dir.get_file_path(filename))
             results_file.write(f'\tSHA-256 digest: {digest}\n')
 
-            if can_check_ads:
-                try:
-                    handler = ADS(working_dir.get_file_path(filename))
-                    if handler.has_streams():
-                        score += 500
-                        results_file.write('\tAlternate Data Streams detected!\n')
-                except Exception as ads_error:
-                    results_file.write(f'\tError checking ADS: {str(ads_error)}\n')
-
             if has_vt_access:
                 try:
                     is_malicious = is_red_scan(digest, vt_api_key)
-                    score += 1000 if is_malicious else 0
+                    score += 500 if is_malicious else 0
                     results_file.write(f'\tVirusTotal scan: {"MALICIOUS" if is_malicious else "Clean"}\n')
                 except Exception as vt_error:
                     results_file.write(f'\tVirusTotal scan error: {str(vt_error)}\n')
@@ -111,6 +97,12 @@ def do_scan(dirpath):
         except Exception as e:
             results_file.write(f'Error processing file {filename}: {str(e)}\n')
             print(f'Error processing file {filename}: {str(e)}')
+
+        if KeywordChecker.check_file(filename) == []:
+
+            results_file.write(f'\tContains no suspicious keywords\n')
+        else:
+            results_file.write(f'The keywords found were: {KeywordChecker.check_file}')
 
 
         if score > 500:

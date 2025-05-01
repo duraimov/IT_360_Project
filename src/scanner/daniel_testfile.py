@@ -19,9 +19,9 @@ def run_daniel():
     #vt = toVirusTotal("C:\\Users\\thebe\\OneDrive\\Desktop\\test.txt")
     #print(vt)
 
-    results = search("C:\\Users\\thebe\\OneDrive\\Desktop\\test.txt", "C:\\Users\\thebe\\OneDrive\\Desktop\\keywords.txt")
     
-    print(results)
+    
+    
 
 
     return
