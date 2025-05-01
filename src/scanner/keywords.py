@@ -14,7 +14,7 @@ class KeywordChecker:
     
 
 
-    def check_file(self, filepath):
+    def check_file(self, filename):
         """
         Check each line of a file for the presence of keywords.
         Returns a dictionary with line numbers and matched keywords.
@@ -22,21 +22,21 @@ class KeywordChecker:
         results = {}
         
         try:
-            with open(filepath, 'r', encoding='utf-8') as file:
-                for line_num, line in enumerate(file, 1):
-                    matches = []
-                    for keyword in self.keywords:
-                        if keyword.lower() in line.lower():
-                            matches.append(keyword)
+            
+            for line_num, line in enumerate(file, 1):
+                 matches = []
+                 for keyword in self.keywords:
+                     if keyword.lower() in line.lower():
+                         matches.append(keyword)
                     
-                    if matches:
+                 if matches:
                         results[line_num] = matches
             
             
             return results
         
         except FileNotFoundError:
-            print(f"Error: File '{filepath}' not found.")
+            print(f"Error: File '{filename}' not found.")
             return None
         except Exception as e:
             print(f"Error reading file: {e}")
