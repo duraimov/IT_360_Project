@@ -2,6 +2,7 @@
 # Ty Qualters & Daniel Uraimov
 import hashlib
 import os
+from typing import Optional
 
 import tkinter as tk
 from tkinter import *
@@ -12,6 +13,7 @@ from tkinter import messagebox
 import io
 from .files import FileOpener, DirectoryHandler
 from .utils import *
+from .virustotal import is_red_scan
 
 
 def hash_file(filepath):
@@ -30,9 +32,21 @@ def open_file():
         return file_path
     return None
 
+def get_virustotal_api_key() -> Optional[str]:
+    """Get VirusTotal API key from environment variable."""
+    return os.environ.get('VIRUSTOTAL_API_KEY')
+
+
 def do_scan(dirpath):
+    vt_api_key = get_virustotal_api_key()
+    has_vt_access = vt_api_key is not None
+
     # Everything we want to scan for should go in here!!
     results_file = open('results.txt', 'w')
+
+    if not has_vt_access:
+        results_file.write('Note: VirusTotal scanning disabled - VIRUSTOTAL_API_KEY not set\n\n')
+
     results_file.write('Scan results:\n')
 
     working_dir = DirectoryHandler(dirpath)
@@ -45,12 +59,49 @@ def do_scan(dirpath):
         if not file or file.exists() is False:
             continue
 
-        file.open_file()
-        contents = file.read()
-        results_file.write(f'File: {filename}\n')
-        results_file.write(f'\tContains RTL character? {"Yes" if isrtlext(filename) else "No"}\n')
-        results_file.write(f'\tMetadata: {str(get_metadata(working_dir.get_file_path(filename)))}\n')
-        results_file.write(f'\tSHA-256 digest: {hash_file(working_dir.get_file_path(filename))}\n')
+        # File starts
+        score = 0
+
+        try:
+            file.open_file()
+            results_file.write(f'File: {filename}\n')
+
+            # Check file size
+            file_size = os.path.getsize(working_dir.get_file_path(filename))
+            if file_size > 350 * 1024 * 1024:  # 350MB in bytes
+                print('File size exceeds 350MiB. This file may take time to analyze.')
+                results_file.write('\tFile size exceeds 350MiB\n')
+                score += 400
+
+            contents = file.read()
+
+            results_file.write(f'\tContains RTL character? {"Yes" if isrtlext(filename) else "No"}\n')
+
+            if isrtlext(filename):
+                score += 100
+
+            results_file.write(f'\tMetadata: {str(get_metadata(working_dir.get_file_path(filename)))}\n')
+            digest = hash_file(working_dir.get_file_path(filename))
+            results_file.write(f'\tSHA-256 digest: {digest}\n')
+
+            if has_vt_access:
+                try:
+                    is_malicious = is_red_scan(digest, vt_api_key)
+                    score += 500 if is_malicious else 0
+                    results_file.write(f'\tVirusTotal scan: {"MALICIOUS" if is_malicious else "Clean"}\n')
+                except Exception as vt_error:
+                    results_file.write(f'\tVirusTotal scan error: {str(vt_error)}\n')
+
+            results_file.write(f'\tScore: {score}\n')
+        except Exception as e:
+            results_file.write(f'Error processing file {filename}: {str(e)}\n')
+            print(f'Error processing file {filename}: {str(e)}')
+
+
+        if score > 500:
+            results_file.write('**SUSPICIOUS!!\n')
+
+        # File Ends
         file.close_file()
 
     results_file.close()
