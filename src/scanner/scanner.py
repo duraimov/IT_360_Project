@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Ty Qualters & Daniel Uraimov
-
+import hashlib
 import os
 
 import tkinter as tk
@@ -12,6 +12,17 @@ from tkinter import messagebox
 import io
 from .files import FileOpener, DirectoryHandler
 from .utils import *
+
+
+def hash_file(filepath):
+    # Hashes a file using SHA-256 and returns the hexadecimal digest
+    sha256 = hashlib.sha256()
+
+    with open(filepath, 'rb') as f:
+        for chunk in iter(lambda: f.read(4096), b''):  # Read in 4KB chunks
+            sha256.update(chunk)
+
+    return sha256.hexdigest()
 
 def open_file():
     file_path = filedialog.askdirectory(title="Select a Folder")
@@ -26,12 +37,20 @@ def do_scan(dirpath):
 
     working_dir = DirectoryHandler(dirpath)
     for filename in working_dir.list_files():
+        if not filename:
+            continue
+
+        print(filename)
         file = working_dir.get_file(filename)
+        if not file or file.exists() is False:
+            continue
+
         file.open_file()
         contents = file.read()
         results_file.write(f'File: {filename}\n')
         results_file.write(f'\tContains RTL character? {"Yes" if isrtlext(filename) else "No"}\n')
         results_file.write(f'\tMetadata: {str(get_metadata(working_dir.get_file_path(filename)))}\n')
+        results_file.write(f'\tSHA-256 digest: {hash_file(working_dir.get_file_path(filename))}\n')
         file.close_file()
 
     results_file.close()
